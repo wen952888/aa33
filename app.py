@@ -4,13 +4,14 @@ from collections import defaultdict
 from spades.spades import SpadesGame
 
 
-# 临时存储游戏状态（生产环境应使用数据库）
+# 临时存储游戏状态和座位状态（生产环境应使用数据库）
 games = {}
+
 
 class SpadesGame:
     def __init__(self):
         self.players_info = [
-            {'name': '玩家1', 'avatar': './static/avatar1.png', 'id': 0, 'hand': []},
+            {'name': '玩家1', 'avatar': './static/avatar1.png', 'id': 0, 'hand': [],'seat_id':None},
             {'name': '玩家2', 'avatar': './static/avatar2.png', 'id': 1, 'hand': []},
             {'name': '玩家3', 'avatar': './static/avatar3.png', 'id': 2, 'hand': []},
             {'name': '玩家4', 'avatar': './static/avatar4.png', 'id': 3, 'hand': []},
@@ -28,6 +29,7 @@ class SpadesGame:
         self.trump = 'spades'
         self.phase = 'bidding'  # or 'playing'
         self.order = ['north', 'east', 'south', 'west']
+        self.seats = [0, 0, 0, 0]
         self.current_player_index = 0
 
     def new_game(self):
@@ -37,14 +39,12 @@ class SpadesGame:
         self.deck = [{'suit': s, 'rank': r, 'filename': f"{r}_of_{s}.png"} for s in suits for r in ranks]
         random.shuffle(self.deck)
         
-        # 发牌给四个玩家
-        cards_per_player = len(self.deck) // len(self.players)
-        for i, player in enumerate(self.players_info):
-            start_index = i * cards_per_player
-            end_index = (i + 1) * cards_per_player
-            hand = self.deck[start_index:end_index] 
-            self.players[player]['hand'] = sorted(hand, key=lambda x: (x['suit'], ranks.index(x['rank'])))
-        self.deck = []
+    def select_seat(self, seat_id, player_id):
+        if 0 <= seat_id < len(self.seats) and self.seats[seat_id] == 0:
+            self.seats[seat_id] = player_id
+            return True
+        else:
+            return False
 
         
         
@@ -92,17 +92,42 @@ app = Flask(__name__)
 
 @app.route('/')
 def main_index():
-    game = SpadesGame()
-    return index(game)
+    
+    if not games:
+        games['game_id'] = SpadesGame()
+    game = games.get('game_id')
+    
+    #如果已经选了座位，则显示index.html，如果没有选择，则显示select_seat.html
+    
+    
+    if len([i for i in game.seats if i!=0]) != 0:
+        return index(game)
+    else:
+        return render_template('select_seat.html')
 
-def index(game):
+def index(game):   
+
+    #如果座位满了，则初始化游戏
+    if all(seat != 0 for seat in game.seats):
+        game.new_game()
+        # 发牌给四个玩家
+        cards_per_player = len(game.deck) // len(game.players)
+        for i, player in enumerate(game.players_info):
+            start_index = i * cards_per_player
+            end_index = (i + 1) * cards_per_player
+            hand = game.deck[start_index:end_index] 
+            game.players[player['id']]['hand'] = sorted(hand, key=lambda x: (x['suit'], ranks.index(x['rank'])))
+        game.deck = []
     return render_template('index.html', players_info=game.players_info)
-@app.route('/new_game', methods=['POST'])    
-def new_game():
-    game_id = str(random.randint(1000,9999))
-    games[game_id] = SpadesGame()
-    games[game_id].new_game()
-    return jsonify({'game_id': game_id})
+
+@app.route('/select_seat', methods=['POST'])
+def select_seat():
+    seat_id = int(request.form.get('seat_id'))
+    player_id = int(request.form.get('player_id'))  # 可以根据需要生成或传递
+    game = games.get('game_id')
+    if game.select_seat(seat_id, player_id):
+        return 'success'
+    return 'fail'
 
 @app.route('/status/<game_id>')
 def game_status(game_id):
