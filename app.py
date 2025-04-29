@@ -25,16 +25,23 @@ class SpadesGame:
         # 创建并洗牌
         suits = ['hearts', 'diamonds', 'clubs', 'spades']
         ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-        self.deck = [{'suit': s, 'rank': r} for s in suits for r in ranks]
+        self.deck = []
+        for s in suits:
+            for r in ranks:
+                filename = f"{r}_of_{s}.png"
+                self.deck.append({'suit': s, 'rank': r, 'filename': filename})
         random.shuffle(self.deck)
         
         # 发牌（每人13张）
         for player in self.players:
-            self.players[player]['hand'] = sorted(
-                self.deck[:13], 
-                key=lambda x: (x['suit'], ranks.index(x['rank']))
+            hand = self.deck[:13]
+            for card in hand:
+                card['filename'] = card['filename']
+            self.players[player]['hand'] = sorted(hand, key=lambda x: (x['suit'], ranks.index(x['rank'])))
             self.deck = self.deck[13:]
 
+        
+        
     def play_card(self, player, card_index):
         # 验证出牌逻辑
         hand = self.players[player]['hand']
