@@ -13,10 +13,10 @@ class SpadesGame():
         self.current_player = 0
         self.played_cards = []
         self.players = {
-            0: {'hand': [], 'bid': 0, 'tricks': 0, 'position': 'top-player'},
-            1: {'hand': [], 'bid': 0, 'tricks': 0, 'position': 'left-player'},
-            2: {'hand': [], 'bid': 0, 'tricks': 0, 'position': 'right-player'},
-            3: {'hand': [], 'bid': 0, 'tricks': 0, 'position': 'bottom-player'},
+            0: {"hand": [], "bid": 0, "tricks": 0, "position": "top-player"},
+            1: {"hand": [], "bid": 0, "tricks": 0, "position": "left-player"},
+            2: {"hand": [], "bid": 0, "tricks": 0, "position": "right-player"},
+            3: {"hand": [], "bid": 0, "tricks": 0, "position": "bottom-player"},
         }
 
         self.trump = 'spades'
@@ -28,16 +28,16 @@ class SpadesGame():
         # 创建并洗牌
         suits = ['hearts', 'diamonds', 'clubs', 'spades']
         ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-        self.deck = [{'suit': s, 'rank': r, 'filename': f"{r}_of_{s}.png"} for s in suits for r in ranks]
+        self.deck = [{"suit": s, "rank": r, "filename": f"{r}_of_{s}.png"} for s in suits for r in ranks]
         random.shuffle(self.deck)
         
         # 发牌给四个玩家
         cards_per_player = len(self.deck) // len(self.players)
         for i, player in enumerate(self.players_info):
             start_index = i * cards_per_player
-            end_index = (i + 1) * cards_per_player
+            end_index = (i + 1) * cards_per_player    
             hand = self.deck[start_index:end_index] 
-            self.players[player][\'hand\'] = sorted(hand, key=lambda x: (x[\'suit\'], ranks.index(x[\'rank\'])))
+            self.players[player]["hand"] = sorted(hand, key=lambda x: (x["suit"], ranks.index(x["rank"])))
         self.deck = []
 
 
