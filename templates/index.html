@@ -1,66 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>黑桃A3游戏</title>
+    <title>选择座位</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div id="game-container">
-        <div id="game-board">
-            <button id="new-game">开始新游戏</button>
-            <div id="top-player">
-                <img id="player-avatar" src="{{ players_info[0].avatar }}" alt="玩家头像">
-                <p id="player-name">{{ players_info[0].name }}</p>
+    <div id="seat-container">
+        <div id="seat-status">
+            <h2>请选择座位位置</h2>
+            <div class="seat-row">
+                <button class="seat" data-seat-id="0" onclick="selectSeat(0)">北</button>
             </div>
-            <div id="left-player">
-                <img id="player-avatar" src="{{ players_info[1].avatar }}" alt="玩家头像">
-                <p id="player-name">{{ players_info[1].name }}</p>
+            <div class="seat-row">
+                <button class="seat" data-seat-id="1" onclick="selectSeat(1)">西</button>
+                <button class="seat" data-seat-id="2" onclick="selectSeat(2)">东</button>
             </div>
-            <div id="right-player">
-                <img id="player-avatar" src="{{ players_info[2].avatar }}" alt="玩家头像">
-                <p id="player-name">{{ players_info[2].name }}</p>
-            </div>
-            <div id="bottom-player">
-                <img id="player-avatar" src="{{ players_info[3].avatar }}" alt="玩家头像">
-                <p id="player-name">{{ players_info[3].name }}</p>
-                <div id="player-hand">
-                    <div></div>
-                </div>
+            <div class="seat-row">
+                <button class="seat" data-seat-id="3" onclick="selectSeat(3)">南</button>
             </div>
         </div>
     </div>
-    
 
     <script>
-        let currentGameId = null;
-        
-        document.getElementById('new-game').addEventListener('click', async () => {
-            const response = await fetch('/new_game', { method: 'POST' });
-            const data = await response.json();
-            currentGameId = data.game_id;
-            updateGameStatus();
-        });
-
-        async function updateGameStatus() {
-            const response = await fetch(`/status/${currentGameId}`);
-            const status = await response.json();
-            // 更新游戏状态显示
-            document.getElementById('game-status').innerHTML = `
-                <p>当前阶段：${status.phase}</p>
-                <p>当前玩家：${status.current_player}</p>
-            `;
-        }
-
-        async function playCard(index) {
-            await fetch(`/play/${currentGameId}`, {
+        async function selectSeat(seatId) {
+            const response = await fetch('/select_seat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
-                    player: 'north',
-                    card_index: index
+                    seat_id: seatId,
+                    player_id: Math.floor(Math.random() * 1000)
                 })
             });
-            updateGameStatus();
+            
+            if (response.ok) {
+                window.location.reload();
+            }
         }
     </script>
 </body>
