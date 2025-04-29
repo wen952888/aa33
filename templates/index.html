@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>黑桃A3游戏</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="game-container">
+        <h1>黑桃A3游戏</h1>
+        <button id="new-game">开始新游戏</button>
+        <div id="game-status"></div>
+        <div id="hand"></div>
+    </div>
+
+    <script>
+        let currentGameId = null;
+        
+        document.getElementById('new-game').addEventListener('click', async () => {
+            const response = await fetch('/new_game', { method: 'POST' });
+            const data = await response.json();
+            currentGameId = data.game_id;
+            updateGameStatus();
+        });
+
+        async function updateGameStatus() {
+            const response = await fetch(`/status/${currentGameId}`);
+            const status = await response.json();
+            
+            // 显示手牌
+            const handDiv = document.getElementById('hand');
+            handDiv.innerHTML = status.players.north.hand
+                .map((card, index) => 
+                    `<button class="card" onclick="playCard(${index})">
+                        ${card.rank} ${card.suit}
+                    </button>`
+                ).join('');
+            
+            // 更新游戏状态显示
+            document.getElementById('game-status').innerHTML = `
+                <p>当前阶段：${status.phase}</p>
+                <p>当前玩家：${status.current_player}</p>
+            `;
+        }
+
+        async function playCard(index) {
+            await fetch(`/play/${currentGameId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    player: 'north',
+                    card_index: index
+                })
+            });
+            updateGameStatus();
+        }
+    </script>
+</body>
+</html>
