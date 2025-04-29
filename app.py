@@ -1,8 +1,9 @@
 from flask import Flask, render_template, jsonify, request
 import random
 from collections import defaultdict
+from .spades import SpadesGame
 
-app = Flask(__name__)
+
 
 # 临时存储游戏状态（生产环境应使用数据库）
 games = {}
@@ -88,11 +89,16 @@ class SpadesGame:
           return winner[0]
         return None
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+app = Flask(__name__)
 
-@app.route('/new_game', methods=['POST'])
+@app.route('/')
+def main_index():
+    game = SpadesGame()
+    return index(game)
+
+def index(game):
+    return render_template('index.html', players_info=game.players_info)
+@app.route('/new_game', methods=['POST'])    
 def new_game():
     game_id = str(random.randint(1000,9999))
     games[game_id] = SpadesGame()
