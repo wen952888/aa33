@@ -6,16 +6,90 @@
 </head>
 <body>
     <div class="game-container">
-        <!-- 保持原有游戏界面结构 -->
-        <div id="top-player">
-            <img src="{{ url_for('static', filename='img/avatars/' + players_info[0].avatar) }}">
-            <div class="hand">
-                {% for card in players_info[0].hand %}
-                    <img src="{{ url_for('static', filename='img/cards/' + card.filename) }}">
+        <!-- 顶部玩家（北） -->
+        <div class="player-area north">
+            <div class="player-info">
+                <img class="avatar" src="{{ url_for('static', filename='img/avatars/' + players_info[0].avatar) }}">
+                <span class="player-name">{{ players_info[0].name }}</span>
+                <div class="bid-box">叫牌：{{ players_info[0].bid }}</div>
+            </div>
+            <div class="played-cards"></div>
+        </div>
+
+        <!-- 中央牌桌 -->
+        <div class="game-table">
+            <div class="trick-counter">当前墩数：{{ game_status.current_trick }}/13</div>
+            <div class="played-cards-area">
+                {% for card in game_status.played_cards %}
+                <img src="{{ url_for('static', filename='img/cards/' + card.filename) }}" 
+                     class="played-card" 
+                     style="transform: rotate({{ 90 * loop.index0 }}deg)">
                 {% endfor %}
             </div>
         </div>
-        <!-- 其他玩家区域类似 -->
+
+        <!-- 底部玩家（南） -->
+        <div class="player-area south current-player">
+            <div class="player-hand">
+                {% for card in players_info[3].hand %}
+                <div class="card-wrapper" data-card-index="{{ loop.index0 }}">
+                    <img src="{{ url_for('static', filename='img/cards/' + card.filename) }}"
+                         class="card"
+                         onclick="playCard(this)">
+                </div>
+                {% endfor %}
+            </div>
+            <div class="player-controls">
+                <button class="bid-button" onclick="submitBid()">叫牌</button>
+                <div class="bid-selector">
+                    <input type="number" id="bid-input" min="0" max="13" value="0">
+                </div>
+            </div>
+        </div>
+
+        <!-- 侧边玩家（东/西） -->
+        <div class="player-area east">
+            <img class="avatar" src="{{ url_for('static', filename='img/avatars/' + players_info[2].avatar) }}">
+            <div class="status-indicator"></div>
+        </div>
+        
+        <div class="player-area west">
+            <img class="avatar" src="{{ url_for('static', filename='img/avatars/' + players_info[1].avatar) }}">
+            <div class="status-indicator"></div>
+        </div>
     </div>
+
+    <script>
+        // 游戏交互逻辑
+        function playCard(cardElement) {
+            const cardIndex = cardElement.parentElement.dataset.cardIndex;
+            fetch(`/play/${currentGameId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    player: 3,  // 假设当前玩家是南位
+                    card_index: parseInt(cardIndex)
+                })
+            }).then(updateGameStatus);
+        }
+
+        function updateGameStatus() {
+            fetch(`/status/${currentGameId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // 更新游戏状态显示
+                    document.querySelector('.trick-counter').innerText = 
+                        `当前墩数：${data.current_trick}/13`;
+                    // 更新出牌区域
+                    const playArea = document.querySelector('.played-cards-area');
+                    playArea.innerHTML = data.played_cards.map(card => 
+                        `<img src="/static/img/cards/${card.filename}" class="played-card">`
+                    ).join('');
+                });
+        }
+
+        // 每5秒更新一次状态
+        setInterval(updateGameStatus, 5000);
+    </script>
 </body>
 </html>
