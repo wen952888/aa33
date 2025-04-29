@@ -20,8 +20,8 @@ def main_index():
     
     if len([i for i in game.seats if i!=0]) != 0:
         return index(game)
-    else:
-        return render_template('select_seat.html')
+    else:    
+        return render_template('select_seat.html')    
 
 def index(game):   
 
