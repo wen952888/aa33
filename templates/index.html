@@ -29,7 +29,7 @@
             const handDiv = document.getElementById('hand');
             handDiv.innerHTML = ''; 
             status.players.north.hand.forEach((card, index) => {
-                handDiv.innerHTML += `<img class="card" src="/static/images/${card.filename}" onclick="playCard(${index})">`;
+                handDiv.innerHTML += `<img src="/static/images/${card.filename}" class="card" onclick="playCard(${index})">`;
             });
             
             // 更新游戏状态显示
