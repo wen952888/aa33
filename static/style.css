@@ -9,7 +9,8 @@ body {
     width: 100vw;
     height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     background-image: url('./static/background.png');
@@ -42,7 +43,6 @@ body {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    position: relative;
 }
 
 #right-player {
