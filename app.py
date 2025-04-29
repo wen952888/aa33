@@ -47,4 +47,15 @@ def select_seat():
     )
     return jsonify({'success': success})
 
-# 其他路由保持不变...
+@app.route('/game_status/<game_id>')
+def get_game_status(game_id):
+    game = games.get(game_id)
+    if not game:
+        return jsonify({'error': 'Game not found'}), 404
+    
+    return jsonify({
+        'current_trick': len(game.played_cards) // 4 + 1,
+        'played_cards': game.played_cards,
+        'trump_suit': game.trump,
+        'current_player': game.current_player
+    })
