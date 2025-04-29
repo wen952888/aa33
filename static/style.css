@@ -1,17 +1,27 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    
+   
+}
+
+#game-board{
     display: flex;
-    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    background-image: url('./static/background.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
     align-items: center;
-    min-height: 100vh;
-    background-image: url('/static/images/background.jpg');
-    background-repeat: repeat;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
 }
 
 .game-container {
     width: 100%;
+
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -20,25 +30,19 @@ body {
     position: relative;
 }
 
-.player-area {
+.player-area ,#top-player, #bottom-player,#left-player,#right-player{
     width: 200px;
     height: 100px;
-    border: 1px solid black;
     text-align: center;
 }
 
 #top-player {
-    align-self: center;
-}
-#left-player{
     position: absolute;
-    left: 0;
+    top: 0;
 }
 
 .card {
     border: 1px solid #333;
-    border-radius: 5px;
-    padding: 10px;
     margin: 5px;
     cursor: pointer;
 }
@@ -47,32 +51,30 @@ body {
     height: 80px;
     border: 1px solid black;
 }
+#left-player{
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
 
-#right-player {
+}
+
+#right-player{
     position: absolute;
     right: 0;
     top:50%;
     transform: translateY(-50%);
 }
+
 #player-avatar{
     width: 80px;
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    
 }
-
 #player-name{
     text-align: center;
     margin-top: 5px;
-}
-#top-player, #bottom-player{
-    display: flex;
-    flex-direction: column;
-}
-    
-#bottom-player {
-    align-self: center;
 }
 #player-hand{
     display: flex;
