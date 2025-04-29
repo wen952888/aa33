@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 import random
 from collections import defaultdict
-from .spades import SpadesGame
+from spades.spades import SpadesGame
 
 
 # 临时存储游戏状态（生产环境应使用数据库）
