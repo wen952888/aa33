@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>加入游戏 - 黑桃A3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>请选择座位</h1>
+        <div class="seat-map">
+            <div class="seat-row">
+                <button class="seat north" data-seat="0">北</button>
+            </div>
+            <div class="seat-row">
+                <button class="seat west" data-seat="1">西</button>
+                <button class="seat east" data-seat="2">东</button>
+            </div>
+            <div class="seat-row">
+                <button class="seat south" data-seat="3">南</button>
+            </div>
+        </div>
+        <div id="status-message"></div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.seat').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const seatId = btn.dataset.seat;
+                const response = await fetch('/api/select-seat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        seat_id: parseInt(seatId),
+                        player_id: Date.now()  // 简单示例ID
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = '/';  // 跳转回主界面
+                } else {
+                    document.getElementById('status-message').innerHTML = 
+                        '<p class="error">座位已被占用，请选择其他位置</p>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
