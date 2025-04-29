@@ -1,113 +1,105 @@
+/* 基础样式 */
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
-    
-   
+    background: #2c5f2d;
+    color: white;
+    font-family: 'Arial', sans-serif;
 }
 
-#seat-container{
+/* 游戏容器 */
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 玩家区域通用样式 */
+.player-area {
+    position: absolute;
+    padding: 20px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 10px;
+    min-width: 200px;
+}
+
+/* 各位置定位 */
+.north { top: 0; left: 50%; transform: translateX(-50%); }
+.south { bottom: 0; left: 50%; transform: translateX(-50%); }
+.east { right: 0; top: 50%; transform: translateY(-50%); }
+.west { left: 0; top: 50%; transform: translateY(-50%); }
+
+/* 当前玩家高亮 */
+.current-player {
+    border: 3px solid #FFD700;
+    box-shadow: 0 0 15px #FFD700;
+}
+
+/* 手牌样式 */
+.player-hand {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    gap: 5px;
+    padding: 10px;
+}
+
+.card {
+    width: 120px;
+    height: 168px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-20px);
+}
+
+/* 已出牌区域 */
+.played-cards-area {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-#seat-container button{
-    margin: 10px;
-    padding: 10px;
-    cursor: pointer;
-}
-#seat-status{
-    margin-top: 20px;
+    width: 300px;
+    height: 300px;
 }
 
+.played-card {
+    position: absolute;
+    width: 100px;
+    height: 140px;
+    transition: all 0.5s;
+}
 
-
-#game-board {
-    width: 100vw;
-    height: 100vh;
+/* 玩家信息 */
+.player-info {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
-    background-image: url('./static/background.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;  
+    gap: 10px;
 }
 
-.player-area, #top-player, #bottom-player, #left-player, #right-player {
-    width: 200px;
-    height: 100px;
-    text-align: center;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
-
-#top-player {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-#left-player {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%) ;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-}
-
-#right-player {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-#bottom-player{
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-#player-avatar{
-    width: 80px;
-    height: 80px;
+.avatar {
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    object-fit: cover;  
-}
-#player-name{
-    text-align: center;
-    margin-top: 5px;
-}
-#player-hand{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#player-hand {
-    width: 500px;   
+    border: 2px solid white;
 }
 
-
-
-#player-hand div {
-    margin-right: 10px; 
+/* 叫牌控件 */
+.bid-selector {
+    margin-top: 10px;
 }
 
+#bid-input {
+    width: 60px;
+    padding: 5px;
+    font-size: 16px;
+}
 
-    
-    
-    
-    
-
+.bid-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
 }
