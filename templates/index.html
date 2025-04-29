@@ -26,14 +26,11 @@
             const response = await fetch(`/status/${currentGameId}`);
             const status = await response.json();
             
-            // 显示手牌
             const handDiv = document.getElementById('hand');
-            handDiv.innerHTML = status.players.north.hand
-                .map((card, index) => 
-                    `<button class="card" onclick="playCard(${index})">
-                        ${card.rank} ${card.suit}
-                    </button>`
-                ).join('');
+            handDiv.innerHTML = ''; 
+            status.players.north.hand.forEach((card, index) => {
+                handDiv.innerHTML += `<img class="card" src="/static/images/${card.filename}" onclick="playCard(${index})">`;
+            });
             
             // 更新游戏状态显示
             document.getElementById('game-status').innerHTML = `
