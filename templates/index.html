@@ -1,43 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>选择座位</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>黑桃A3 - 游戏进行中</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div id="seat-container">
-        <div id="seat-status">
-            <h2>请选择座位位置</h2>
-            <div class="seat-row">
-                <button class="seat" data-seat-id="0" onclick="selectSeat(0)">北</button>
-            </div>
-            <div class="seat-row">
-                <button class="seat" data-seat-id="1" onclick="selectSeat(1)">西</button>
-                <button class="seat" data-seat-id="2" onclick="selectSeat(2)">东</button>
-            </div>
-            <div class="seat-row">
-                <button class="seat" data-seat-id="3" onclick="selectSeat(3)">南</button>
+    <div class="game-container">
+        <!-- 保持原有游戏界面结构 -->
+        <div id="top-player">
+            <img src="{{ url_for('static', filename='img/avatars/' + players_info[0].avatar) }}">
+            <div class="hand">
+                {% for card in players_info[0].hand %}
+                    <img src="{{ url_for('static', filename='img/cards/' + card.filename) }}">
+                {% endfor %}
             </div>
         </div>
+        <!-- 其他玩家区域类似 -->
     </div>
-
-    <script>
-        async function selectSeat(seatId) {
-            const response = await fetch('/select_seat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    seat_id: seatId,
-                    player_id: Math.floor(Math.random() * 1000)
-                })
-            });
-            
-            if (response.ok) {
-                window.location.reload();
-            }
-        }
-    </script>
 </body>
 </html>
