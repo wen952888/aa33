@@ -6,11 +6,29 @@
 </head>
 <body>
     <div id="game-container">
-        <h1>黑桃A3游戏</h1>
-        <button id="new-game">开始新游戏</button>
-        <div id="game-status"></div>
-        <div id="hand"></div>
+       <div id="top-player">
+            <img id="player-avatar" src="{{ players_info[0].avatar }}" alt="玩家头像">
+            <p id="player-name">{{ players_info[0].name }}</p>
+        </div>
+        <div id="left-player">
+             <img id="player-avatar" src="{{ players_info[1].avatar }}" alt="玩家头像">
+             <p id="player-name">{{ players_info[1].name }}</p>
+        </div>
+        <div id="right-player">
+            <img id="player-avatar" src="{{ players_info[2].avatar }}" alt="玩家头像">
+            <p id="player-name">{{ players_info[2].name }}</p>
+        </div>
+        <div id="bottom-player">
+            <img id="player-avatar" src="{{ players_info[3].avatar }}" alt="玩家头像">
+            <p id="player-name">{{ players_info[3].name }}</p>
+           
+            
+           
+           
+            <div id="player-hand">占位符手牌</div>
+        </div>
     </div>
+    <button id="new-game">开始新游戏</button>
 
     <script>
         let currentGameId = null;
@@ -25,13 +43,6 @@
         async function updateGameStatus() {
             const response = await fetch(`/status/${currentGameId}`);
             const status = await response.json();
-            
-            const handDiv = document.getElementById('hand');
-            handDiv.innerHTML = ''; 
-            status.players.north.hand.forEach((card, index) => {
-                handDiv.innerHTML += `<img src="/static/images/${card.filename}" class="card" onclick="playCard(${index})">`;
-            });
-            
             // 更新游戏状态显示
             document.getElementById('game-status').innerHTML = `
                 <p>当前阶段：${status.phase}</p>
