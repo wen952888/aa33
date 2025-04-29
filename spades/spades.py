@@ -34,8 +34,8 @@ class SpadesGame:
             start = i * cards_per_player
             end = start + cards_per_player
             self.players[i]['hand'] = sorted(
-                self.deck[start:end],
-                key=lambda x: (x['suit'], ranks.index(x['rank']))
+                self.deck[start:end], 
+                key=lambda x: (x['suit'], ranks.index(x['rank'])))
         self.deck = []
 
     def select_seat(self, seat_id, player_id):
